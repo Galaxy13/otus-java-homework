@@ -2,7 +2,7 @@ package com.galaxy13.homework2;
 
 public class Homework2 {
     public static void printNTimes(int n, String str){
-        System.out.println((str + "\n").repeat(n));
+        System.out.println((str + "\n").repeat(n).trim());
     }
 
     public static void sumFiveOrBigger(int[] intArray){
@@ -42,7 +42,7 @@ public class Homework2 {
 
     public static void whichHalfSumBigger(int[] intArray){
         /*
-        Пояснение: так как в задании не было отражено явно, как действовать если количество элементов
+        Пояснение: так как в задании не было отражено явно, как действовать, если количество элементов
         массива нечётное, алгоритм в данном случае центр массива считает 2 половиной.
         first|second
              |
