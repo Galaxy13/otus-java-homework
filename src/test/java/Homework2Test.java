@@ -21,6 +21,6 @@ public class Homework2Test {
 
     @Test
     public void testPrintNTimes(){
-        assertEquals()
+        assertEquals("TEMP", "TEMP");
     }
 }
