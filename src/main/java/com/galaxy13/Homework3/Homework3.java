@@ -1,5 +1,7 @@
 package com.galaxy13.Homework3;
 
+import java.util.Arrays;
+
 interface CaseCheck{
     boolean caseCheck(int row, int col);
 }
@@ -45,54 +47,50 @@ public class Homework3 {
         }
     }
 
+    static void checkEmptyArray(int[][] checkingArray) throws Exception {
+        if (checkingArray.length == 0) {
+            throw new Exception("Empty array");
+        }
+        if (Arrays.stream(checkingArray).allMatch(innerArray -> innerArray.length == 0)) {
+            throw new Exception("All inner arrays are empty.");
+        }
+    }
+
     public static void diagonalsZeroing(int[][] intArray, DiagonalType type) throws Exception{
-        if (intArray.length == 0){
-            throw new Exception("Empty array");
-        }
-        else if (intArray[0].length == 0){
-            throw new Exception("Empty array");
-        }
+        checkEmptyArray(intArray);
         for (int[] innerArray: intArray){
             if (innerArray.length != intArray.length){
                 throw new Exception("Array is not symmetric. Diagonal not defined");
             }
         }
+        CaseCheck diagonalType;
         switch (type){
-            case BOTH -> {
-                CaseCheck bothDiagonals = (row, col) -> (row == col || intArray.length - col - 1 == row);
-                loopCase(intArray, bothDiagonals);
-            }
-            case MAIN_DIAGONAL -> {
-                CaseCheck mainDiagonal = (row, col) -> (row == col);
-                loopCase(intArray, mainDiagonal);
-            }
-            case SECONDARY_DIAGONAL -> {
-                CaseCheck secondaryDiagonal = (row, col) -> intArray.length - col - 1  == row;
-                loopCase(intArray, secondaryDiagonal);
-            }
+            case BOTH -> diagonalType = (row, col) -> (row == col || intArray.length - col - 1 == row);
+            case MAIN_DIAGONAL -> diagonalType = (row, col) -> (row == col);
+            case SECONDARY_DIAGONAL -> diagonalType = (row, col) -> intArray.length - col - 1 == row;
+
+            default -> diagonalType = ((row, col) -> false);
         }
+        loopCase(intArray, diagonalType);
     }
 
     public static int findMax(int[][] intArray) throws Exception{
-        if (intArray.length == 0){
-            throw new Exception("Empty array. No max element");
-        }
+        checkEmptyArray(intArray);
+        //
         int max_element = Integer.MIN_VALUE;
         for (int[] innerIntArray : intArray) {
-            for (int col = 0; col < intArray.length; col++) {
-                max_element = Integer.max(max_element, innerIntArray[col]);
+            for (int number : innerIntArray) {
+                max_element = Integer.max(max_element, number);
             }
         }
         return max_element;
+        //
 
 //        or
 //        OptionalInt optionalInt = Arrays.stream(intArray)
 //                .flatMapToInt(Arrays::stream)
-//                .max();
-//        if (optionalInt.isPresent()){
-//            return optionalInt.getAsInt();
-//        } else {
-//            throw new Exception("Empty array. No max element");
+//                .max()
+//                .getAsInt();
 //        }
     }
 
@@ -100,9 +98,11 @@ public class Homework3 {
         if (intArray.length < 2){
             return -1;
         }
-        int[] secondRow = intArray[1];
+        if (intArray[1].length == 0) {
+            return -1;
+        }
         int secondRowSum = 0;
-        for (int rowNumber: secondRow){
+        for (int rowNumber : intArray[1]) {
             secondRowSum += rowNumber;
         }
         return secondRowSum;
