@@ -18,12 +18,12 @@ public class Main {
 
         Cat cat = new Cat("Walky", 5.0, 0.0, 100);
         printTime(cat.run(90));
-        printTime(cat.swim(120));
+        // printTime(cat.swim(120)); now there is no function swim() available for Cat
         cat.info();
 
         Dog dog = new Dog("Bobik", 20.0, 5.0, 150);
-        printTime(dog.swim(5));
-        printTime(dog.run(60));
+        printTime(dog.run(10));
+        printTime(dog.swim(50));
         dog.info();
     }
 }

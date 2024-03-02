@@ -1,13 +1,17 @@
 package com.galaxy13.Homework5;
 
-public class Cat extends Animal {
+import lombok.experimental.Delegate;
+
+public class Cat implements Runnable {
+    @Delegate(excludes = Swimmable.class)
+    private final Animal animal;
+
     public Cat(String name, double runningVelocity, double swimmingVelocity, double endurance) {
-        super(name, runningVelocity, swimmingVelocity, endurance, 0);
+        animal = new Animal(name, runningVelocity, swimmingVelocity, endurance, 2, getClass().getSimpleName());
     }
 
     @Override
-    public double swim(double distance) {
-        System.out.println("Cat can't swim");
-        return -1;
+    public double run(double distance) {
+        return animal.run(distance);
     }
 }
