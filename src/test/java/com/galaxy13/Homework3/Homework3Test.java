@@ -50,7 +50,7 @@ public class Homework3Test {
     }
 
     @Test
-    public void testdiagonalZeroing() throws Exception {
+    public void testDiagonalZeroing() throws Exception {
 
        int[][] intArray1 = {};
        Exception exception1 = assertThrows(Exception.class, () -> Homework3.diagonalsZeroing(intArray1, DiagonalType.BOTH));
