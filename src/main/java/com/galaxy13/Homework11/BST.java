@@ -107,7 +107,7 @@ public class BST implements SearchTree {
         root = recursiveAddSortedList(sortedList, 0, sortedList.size() - 1);
     }
 
-    public void printTree() {
+    public void printBalancedTree() {
         if (root == null) {
             return;
         }
@@ -127,13 +127,15 @@ public class BST implements SearchTree {
             }
         }
         int treeHeight = nodeValues.size();
+        int baseLevel = 0;
         int baseIndex = 0;
         int spaceLength = treeHeight;
         for (int i = 0; i < nodeValues.size(); i++) {
             System.out.print(" ".repeat(spaceLength) + nodeValues.get(i));
             if (i == baseIndex) {
-                baseIndex += 4;
-                System.out.print("\n");
+                baseLevel += 1;
+                baseIndex += 2 * baseLevel;
+                System.out.print(" ".repeat(spaceLength) + "\n");
                 spaceLength /= 2;
             }
         }

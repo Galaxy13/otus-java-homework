@@ -21,6 +21,6 @@ public class Main {
         bstForSortedList.remove(10);
         System.out.println(bstForSortedList.find(10));
 
-        bstForSortedList.printTree();
+        bstForSortedList.printBalancedTree();
     }
 }
