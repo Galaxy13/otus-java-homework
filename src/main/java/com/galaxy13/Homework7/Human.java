@@ -1,9 +1,9 @@
 package com.galaxy13.Homework7;
 
 public class Human {
-    String name;
-    Transport currentTransport = new Transport(100, "legs");
-    Transport tempTransport = this.currentTransport;
+    private final String name;
+    private Transport currentTransport = new Transport(100, "legs");
+    private Transport tempTransport = this.currentTransport;
 
     public Human(String name) throws Exception {
         this.name = name;
