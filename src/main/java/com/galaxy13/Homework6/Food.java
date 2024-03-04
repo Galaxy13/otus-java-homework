@@ -1,11 +1,11 @@
 package com.galaxy13.Homework6;
 
 public class Food {
-    private final String foodName;
+    private final String name;
     private int foodQuantity;
 
     public Food(String foodName, int foodQuantity) {
-        this.foodName = foodName;
+        this.name = foodName;
         this.foodQuantity = foodQuantity;
     }
 
@@ -13,11 +13,11 @@ public class Food {
         return this.foodQuantity;
     }
 
-    public void setFoodQuantity(int newFoodQuantity) {
-        this.foodQuantity = newFoodQuantity;
+    public void decreaseFoodQuantity(int foodQuantity) {
+        this.foodQuantity -= foodQuantity;
     }
 
-    public String getFoodName() {
-        return this.foodName;
+    public String getName() {
+        return this.name;
     }
 }

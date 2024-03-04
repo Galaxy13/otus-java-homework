@@ -2,7 +2,7 @@ package com.galaxy13.Homework6;
 
 public class Cat {
     private final int requiredFoodQuantity;
-    private boolean satiety = false;
+    private boolean satiety;
 
     public Cat(int requiredFoodQuantity) {
         this.requiredFoodQuantity = requiredFoodQuantity;
