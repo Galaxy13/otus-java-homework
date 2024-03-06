@@ -26,5 +26,7 @@ public class Main {
         System.out.println(Homework9.getUserOlder(testList4, 24));
         System.out.println(Homework9.checkAvgAge(testList4, 33));
         System.out.println(Homework9.youngestUser(testList4));
+
+        System.out.println(Homework9.getNamesList(null));
     }
 }
