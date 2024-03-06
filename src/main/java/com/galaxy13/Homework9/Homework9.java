@@ -39,7 +39,7 @@ public class Homework9 {
     public static List<String> getNamesList(List<User> userList) {
         if (userList == null) {
             System.out.println("Null pointer not accepted");
-            return null;
+            return List.of();
         }
         return userList.stream().map(User::getName).collect(Collectors.toList());
     }
@@ -47,7 +47,7 @@ public class Homework9 {
     public static List<User> getUserOlder(List<User> userList, int minAge) {
         if (userList == null) {
             System.out.println("Null pointer not accepted");
-            return null;
+            return List.of();
         }
         return userList.stream().filter(user -> user.getAge() >= minAge).collect(Collectors.toList());
     }

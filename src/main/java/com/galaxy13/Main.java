@@ -28,5 +28,6 @@ public class Main {
         System.out.println(Homework9.youngestUser(testList4));
 
         System.out.println(Homework9.getNamesList(null));
+        System.out.println(Homework9.getNamesList(List.of()));
     }
 }
