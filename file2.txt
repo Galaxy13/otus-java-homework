@@ -1,2 +1,3 @@
 test writing 1 line
 test writing new line in new process
+text appended

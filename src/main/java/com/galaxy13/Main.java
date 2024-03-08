@@ -3,63 +3,67 @@ package com.galaxy13;
 import com.galaxy13.homework12.TxtWriter;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        File[] txtFiles = TxtWriter.showTxt();
-        if (txtFiles.length == 0) {
-            System.out.println("No txt files in current directory");
-            return;
-        }
-        System.out.println("Txt files in current directory:");
-        for (int i = 0; i < txtFiles.length; i++) {
-            System.out.printf("%d. %s%n", i + 1, txtFiles[i].getName());
-        }
+    private static boolean checkInput(int input, int maxInput) {
+        return 1 <= input && input <= maxInput;
+    }
 
-        Scanner scanner = new Scanner(System.in);
+    private static void out(String txt) {
+        System.out.println(txt);
+    }
+
+    private static int readFileNumber(File[] txtFiles, Scanner scanner) {
         System.out.printf("Select file: 1-%d%n", txtFiles.length);
-        int selectedFile;
-        while (true) {
+        int fileIndex = 1;
+        boolean intInputFlag = true;
+        while (intInputFlag) {
             try {
-                selectedFile = scanner.nextInt();
-                if (selectedFile < 1 || selectedFile > txtFiles.length) {
-                    System.out.println("Number not in range. Try again");
-                    continue;
+                fileIndex = scanner.nextInt();
+                if (!checkInput(fileIndex, txtFiles.length)) {
+                    out("Number not in range. Try again");
+                } else {
+                    intInputFlag = false;
                 }
-                break;
             } catch (InputMismatchException e) {
-                System.out.println("Not a number.Try again");
+                out("Not a number.Try again");
                 scanner.nextLine();
             }
         }
+        return fileIndex - 1;
+    }
 
-        System.out.println("Enter text (double Enter to finish):");
+    private static String readTextFromConsole(Scanner scanner) {
+        out("Enter text (double Enter to finish):");
         StringBuilder sb = new StringBuilder();
         scanner.nextLine();
-        while (true) {
+        boolean scannerFlag = true;
+        while (scannerFlag) {
             String line = scanner.nextLine();
             if (line.isEmpty()) {
                 scanner.close();
-                break;
+                scannerFlag = false;
             } else {
                 sb.append(line).append("\n");
             }
         }
+        return sb.toString();
+    }
 
-        try {
-            TxtWriter.writeToFile(txtFiles[selectedFile - 1], sb.toString());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+    public static void main(String[] args) {
+        File[] txtFiles = TxtWriter.showTxt();
+        out(TxtWriter.outDirectories(txtFiles));
+        Scanner scanner = new Scanner(System.in);
 
-        try {
-            System.out.println("File contents:\n");
-            System.out.println(TxtWriter.readTxtFile(txtFiles[selectedFile - 1]));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        int fileIndex = readFileNumber(txtFiles, scanner);
+
+        String consoleText = readTextFromConsole(scanner);
+
+        File selectedFile = txtFiles[fileIndex];
+
+        out(TxtWriter.writeToFile(selectedFile, consoleText));
+        out(TxtWriter.readTxtFile(selectedFile));
     }
 }
