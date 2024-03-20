@@ -1,0 +1,3 @@
+host: "localhost"
+port: 27105
+timeout: 5000
