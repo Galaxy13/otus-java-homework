@@ -81,12 +81,12 @@ class ClientHandler implements AutoCloseable {
 
 }
 
-public class Server {
+public class CalculationServer {
     private final ServerSocket serverSocket;
     private final ServerConfig config;
     private boolean stopCondition = false;
 
-    public Server(ServerConfig config) throws IOException {
+    public CalculationServer(ServerConfig config) throws IOException {
         this.config = config;
         serverSocket = new ServerSocket(this.config.getPort());
         out("Server started");
@@ -95,7 +95,7 @@ public class Server {
         }
     }
 
-    public Server() throws IOException {
+    public CalculationServer() throws IOException {
         this.config = new ServerConfig(27105, List.of("+", "-", "/", "*"), true);
         serverSocket = new ServerSocket(config.getPort());
         out("Server started with default config: port 27105");
@@ -116,14 +116,14 @@ public class Server {
 
     public static void main(String[] args) {
         ServerConfig config;
-        Server server;
+        CalculationServer server;
         try {
             config = getConfig();
-            server = new Server(config);
+            server = new CalculationServer(config);
         } catch (IOException e) {
             out("Config parse error.");
             try {
-                server = new Server();
+                server = new CalculationServer();
             } catch (IOException err) {
                 out("Server start error");
                 return;
