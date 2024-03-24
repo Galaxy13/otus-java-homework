@@ -81,7 +81,7 @@ public class FillArray {
         return Duration.between(startMillis, finishMillis).toMillis();
     }
 
-    public long fillAsync() {
+    public long fillFuture() {
         Instant startMillis = Instant.now();
         List<CompletableFuture<Void>> futures = new ArrayList<>(4);
         for (int i = 0; i < 4; i++) {

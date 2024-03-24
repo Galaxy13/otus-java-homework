@@ -17,6 +17,6 @@ public class Main {
             System.out.println("Multi-thread operation error. " + e.getMessage());
         }
         outTime(fillArray.fillThreadPool());
-        outTime(fillArray.fillAsync());
+        outTime(fillArray.fillFuture());
     }
 }
