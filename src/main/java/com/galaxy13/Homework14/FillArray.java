@@ -34,7 +34,7 @@ public class FillArray {
         for (int j = 0; j < 4; j++) {
             final int start = fourthPart * j;
             final int finish = fourthPart * (j + 1) - 1;
-            Thread.startVirtualThread((() -> { // green threads of Java 21
+            Thread.startVirtualThread((() -> { // virtual threads of Java 21
                 fillArray(start, finish);
                 latch.countDown();
             }
@@ -52,7 +52,7 @@ public class FillArray {
         for (int i = 0; i < 4; i++) {
             final int start = fourthPart * i;
             final int finish = fourthPart * (i + 1) - 1;
-            Thread thread = Thread.startVirtualThread(() -> { // green threads of Java 21
+            Thread thread = Thread.startVirtualThread(() -> { // virtual threads of Java 21
                 fillArray(start, finish);
             });
             threads.add(thread);
