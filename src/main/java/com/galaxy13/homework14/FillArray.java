@@ -1,4 +1,4 @@
-package com.galaxy13.Homework14;
+package com.galaxy13.homework14;
 
 
 import java.time.Duration;
@@ -11,29 +11,29 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class FillArray {
-    private final double[] doubles = new double[100_000_000];
-    private final int fourthPart = doubles.length / 4;
+    private static final double[] DOUBLES = new double[100_000_000];
+    private static final int FOURTH_PART = DOUBLES.length / 4;
 
-    private void fillArray(int start, int finish) {
+    private static void fillArray(int start, int finish) {
         for (int i = start; i < finish; i++) {
-            doubles[i] = 1.14 * Math.cos(i) * Math.sin(i * 0.2) * Math.cos(i / 1.2);
+            DOUBLES[i] = 1.14 * Math.cos(i) * Math.sin(i * 0.2) * Math.cos(i / 1.2);
         }
     }
 
-    public long fillOneThread() {
+    public static long fillOneThread() {
         Instant start = Instant.now();
-        fillArray(0, doubles.length);
+        fillArray(0, DOUBLES.length);
         Instant finish = Instant.now();
         return Duration.between(start, finish).toMillis();
     }
 
-    public long fillMultiThreadLatch() throws InterruptedException {
+    public static long fillMultiThreadLatch() throws InterruptedException {
         Instant startMillis = Instant.now();
         CountDownLatch latch = new CountDownLatch(4);
 
         for (int j = 0; j < 4; j++) {
-            final int start = fourthPart * j;
-            final int finish = fourthPart * (j + 1) - 1;
+            final int start = FOURTH_PART * j;
+            final int finish = FOURTH_PART * (j + 1) - 1;
             Thread.startVirtualThread((() -> { // virtual threads of Java 21
                 fillArray(start, finish);
                 latch.countDown();
@@ -45,16 +45,14 @@ public class FillArray {
         return Duration.between(startMillis, finishMillis).toMillis();
     }
 
-    public long fillMultiThread() {
+    public static long fillMultiThread() {
         Instant startMillis = Instant.now();
         List<Thread> threads = new ArrayList<>(4);
 
         for (int i = 0; i < 4; i++) {
-            final int start = fourthPart * i;
-            final int finish = fourthPart * (i + 1) - 1;
-            Thread thread = Thread.startVirtualThread(() -> { // virtual threads of Java 21
-                fillArray(start, finish);
-            });
+            final int start = FOURTH_PART * i;
+            final int finish = FOURTH_PART * (i + 1) - 1;
+            Thread thread = Thread.startVirtualThread(() -> fillArray(start, finish));
             threads.add(thread);
         }
         threads.forEach(x -> {
@@ -68,12 +66,12 @@ public class FillArray {
         return Duration.between(startMillis, finishMillis).toMillis();
     }
 
-    public long fillThreadPool() {
+    public static long fillThreadPool() {
         Instant startMillis = Instant.now();
         try (ExecutorService threadPool = Executors.newCachedThreadPool()) {
             for (int i = 0; i < 4; i++) {
-                int start = fourthPart * i;
-                int finish = fourthPart * (i + 1) - 1;
+                int start = FOURTH_PART * i;
+                int finish = FOURTH_PART * (i + 1) - 1;
                 threadPool.execute(() -> fillArray(start, finish));
             }
         }
@@ -81,12 +79,12 @@ public class FillArray {
         return Duration.between(startMillis, finishMillis).toMillis();
     }
 
-    public long fillFuture() {
+    public static long fillFuture() {
         Instant startMillis = Instant.now();
         List<CompletableFuture<Void>> futures = new ArrayList<>(4);
         for (int i = 0; i < 4; i++) {
-            final int start = fourthPart * i;
-            final int finish = fourthPart * (i + 1) - 1;
+            final int start = FOURTH_PART * i;
+            final int finish = FOURTH_PART * (i + 1) - 1;
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> fillArray(start, finish));
             futures.add(future);
         }

@@ -1,22 +1,21 @@
 package com.galaxy13;
 
-import com.galaxy13.Homework14.FillArray;
+import com.galaxy13.homework14.FillArray;
 
 public class Main {
     private static void outTime(long execTimeMillis) {
-        System.out.println("Time: " + ((double) execTimeMillis) / 1000.0 + "s");
+        System.out.println("Time: " + execTimeMillis / 1000.0 + "s");
     }
 
     public static void main(String[] args) {
-        FillArray fillArray = new FillArray();
-        outTime(fillArray.fillOneThread());
-        outTime(fillArray.fillMultiThread());
+        outTime(FillArray.fillOneThread());
+        outTime(FillArray.fillMultiThread());
         try {
-            outTime(fillArray.fillMultiThreadLatch());
+            outTime(FillArray.fillMultiThreadLatch());
         } catch (InterruptedException e) {
             System.out.println("Multi-thread operation error. " + e.getMessage());
         }
-        outTime(fillArray.fillThreadPool());
-        outTime(fillArray.fillFuture());
+        outTime(FillArray.fillThreadPool());
+        outTime(FillArray.fillFuture());
     }
 }
