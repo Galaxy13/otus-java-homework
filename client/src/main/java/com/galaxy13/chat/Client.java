@@ -33,6 +33,7 @@ public class Client {
         }).start();
     }
 
+
     private void handleOutput(DataOutputStream outputStream, Scanner scanner) throws IOException {
         while (true) {
             String msg = scanner.nextLine();
@@ -40,7 +41,7 @@ public class Client {
                 break;
             }
             outputStream.writeUTF(msg);
-            outputStream.flush();
+//            outputStream.flush();
         }
     }
 
@@ -49,7 +50,8 @@ public class Client {
         String userName = setUserName(scanner);
         try (Socket socket = new Socket(host, port);
              DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-             DataInputStream inputStream = new DataInputStream(socket.getInputStream())) {
+             DataInputStream inputStream = new DataInputStream(socket.getInputStream())
+        ) {
             outputStream.writeUTF("/set_username " + userName);
             threadInputStart(inputStream);
             handleOutput(outputStream, scanner);

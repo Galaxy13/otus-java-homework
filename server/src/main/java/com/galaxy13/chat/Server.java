@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
@@ -17,6 +18,7 @@ public class Server {
     private final Object syncObject = new Object();
     private final List<ClientHandler> testList = new ArrayList<>();
     private int userCounter;
+    private final String serverName = "Server";
     public Server(int port) {
         this.port = port;
     }
@@ -27,6 +29,8 @@ public class Server {
             ClientHandler handler = new ClientHandler(clientSocket, this);
             userCounter++;
             String name = handler.getName();
+            handler.sendMessage(serverName, String.format("Welcome to our server, %s!", name));
+            usersOnline(handler);
             clientHandlerMap.put(name, handler);
             System.out.println("Size of testMap: " + clientHandlerMap.size());
         } catch (IOException e) {
@@ -47,26 +51,39 @@ public class Server {
         }
     }
 
+    private void usersOnline(ClientHandler handler) {
+        StringJoiner stringJoiner = new StringJoiner("\n");
+        stringJoiner.add("Users online:");
+        for (String username : clientHandlerMap.keySet()) {
+            stringJoiner.add(username);
+        }
+        handler.sendMessage("Server", stringJoiner.toString());
+    }
+
     public void disconnect(ClientHandler handler) {
         testList.remove(handler);
         System.out.println("Handler removed. Current size: " + testList.size());
     }
 
-    public void sendMessage(String receivingUser, String message) throws NoSuchUserException {
+    public void handleMessage(String sender, String receivingUser, String message) throws NoSuchUserException {
         synchronized (syncObject) {
             if (clientHandlerMap.containsKey(receivingUser)) {
-                clientHandlerMap.get(receivingUser).sendMessage(message);
+                clientHandlerMap.get(receivingUser).sendMessage(sender, message);
             } else {
                 throw new NoSuchUserException(receivingUser + "not exists or offline");
             }
         }
     }
 
-    public void sendMessage(String message) {
-        clientHandlerMap.values().forEach(handler -> handler.sendMessage(message));
+    public void handleMessage(String sender, String message) {
+        clientHandlerMap.values().forEach(handler -> handler.sendMessage(sender, message));
     }
 
     public int getUserCounter() {
         return userCounter;
+    }
+
+    public String getServerName() {
+        return serverName;
     }
 }
