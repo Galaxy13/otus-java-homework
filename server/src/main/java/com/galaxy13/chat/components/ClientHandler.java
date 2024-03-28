@@ -12,15 +12,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ClientHandler {
+
     final Socket clientSocket;
+
     private final Commands serverCommands;
+
     private final Server parentServer;
+
     private final DataOutputStream outputStream;
+
     private final DataInputStream inputStream;
+
     private String userName;
+
     private boolean listenerStop = false;
+
     @SuppressWarnings("FieldCanBeLocal")
     private final String messageTimeFormat = "HH:mm:ss";
+
     private final Logger logger;
 
     public ClientHandler(Socket clientSocket, Commands serverCommands, Server parentServer) throws IOException, WrongNameCommandException {

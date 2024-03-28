@@ -13,11 +13,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("InfiniteLoopStatement")
 public class Server {
+
     private final int port;
+
     private final Map<String, ClientHandler> clientHandlerMap = new ConcurrentHashMap<>();
+
     private final Commands serverCommands = new Commands(this);
+
     private int userCounter;
+
     private final String serverName = "Server";
+
     public Server(int port) {
         this.port = port;
     }
