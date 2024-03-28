@@ -1,5 +1,6 @@
-package com.galaxy13.chat;
+package com.galaxy13.chat.components;
 
+import com.galaxy13.chat.enums.SendContext;
 import com.galaxy13.chat.exceptions.NoSuchUserException;
 import com.galaxy13.chat.exceptions.WrongNameCommandException;
 
@@ -12,16 +13,21 @@ import java.util.Date;
 
 public class ClientHandler {
     final Socket clientSocket;
+    private final Commands serverCommands;
     private final Server parentServer;
     private final DataOutputStream outputStream;
     private final DataInputStream inputStream;
     private String userName;
     private boolean listenerStop = false;
-    private final String timeFormat = "HH:mm:ss";
+    @SuppressWarnings("FieldCanBeLocal")
+    private final String messageTimeFormat = "HH:mm:ss";
+    private final Logger logger;
 
-    public ClientHandler(Socket clientSocket, Server parentServer) throws IOException, WrongNameCommandException {
+    public ClientHandler(Socket clientSocket, Commands serverCommands, Server parentServer) throws IOException, WrongNameCommandException {
         this.clientSocket = clientSocket;
+        this.serverCommands = serverCommands;
         this.parentServer = parentServer;
+        this.logger = parentServer.getLogger();
         outputStream = new DataOutputStream(clientSocket.getOutputStream());
         inputStream = new DataInputStream(clientSocket.getInputStream());
         this.nameInit();
@@ -29,7 +35,7 @@ public class ClientHandler {
             try {
                 this.listenerStart();
             } catch (IOException e) {
-                System.out.println("Client start error");
+                logger.exceptionLog("Client start error");
             }
         });
     }
@@ -39,35 +45,44 @@ public class ClientHandler {
             try {
                 while (!listenerStop) {
                     String msg = inputStream.readUTF();
-                    if (msg.startsWith("/w")) {
-                        String[] context = msg.split(" ", 3);
-                        String targetUser = context[1];
-                        String message = context[2];
-                        try {
-                            parentServer.handleMessage(userName, targetUser, message);
-                        } catch (NoSuchUserException e) {
-                            sendMessage("Server", "User with name " + userName + " does not exists or offline");
-                        }
-                    } else {
-                        parentServer.handleMessage(userName, msg);
-                    }
+                    messageWorker(msg);
                 }
             } catch (IOException err) {
-                System.out.println("Client disconnected.");
+                logger.exceptionLog(String.format("User %s disconnected", userName));
             }
         } finally {
-            parentServer.handleMessage(parentServer.getServerName(), String.format("User %s disconnected", userName));
+            serverCommands.broadcast(this, String.format("User %s left server", userName));
+            stopHandlerListener();
             parentServer.disconnect(this);
         }
     }
 
-    public void sendMessage(String sender, String message) {
-        String timeStamp = new SimpleDateFormat(timeFormat).format(new Date());
+    private void messageWorker(String msg) {
+        if (msg.startsWith("/w")) {
+            String[] context = msg.split(" ", 3);
+            String targetUser = context[1];
+            String message = context[2];
+            try {
+                serverCommands.privateMessage(this, targetUser, message, SendContext.PERSONAL);
+            } catch (NoSuchUserException e) {
+                sendMessage(parentServer.getServerName(), "User with name " + targetUser + " does not exists or offline", SendContext.INFO);
+            }
+        } else if (msg.trim().startsWith("/o")) {
+            serverCommands.onlineUsers(this);
+        } else if (msg.trim().startsWith("/h")) {
+            serverCommands.help(this);
+        } else {
+            serverCommands.broadcast(this, msg);
+        }
+    }
+
+    public void sendMessage(String sender, String message, SendContext sendContext) {
+        String timeStamp = new SimpleDateFormat(messageTimeFormat).format(new Date());
         try {
-            outputStream.writeUTF(String.format("[%s]<%s> %s", timeStamp, sender, message));
-//            outputStream.flush();
+            outputStream.writeUTF(String.format("{%s}[%s]<%s> %s", sendContext.getValue(), timeStamp, sender, message));
+            outputStream.flush();
         } catch (IOException e) {
-            System.out.println("Message send error");
+            logger.exceptionLog("Output stream closed");
         }
     }
 

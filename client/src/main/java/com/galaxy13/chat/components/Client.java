@@ -1,4 +1,4 @@
-package com.galaxy13.chat;
+package com.galaxy13.chat.components;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -9,6 +9,7 @@ import java.util.Scanner;
 public class Client {
     private final String host;
     private final int port;
+    private boolean threadInputStopped = false;
 
     public Client(String host, int port) {
         this.host = host;
@@ -23,12 +24,12 @@ public class Client {
     private void threadInputStart(DataInputStream inputStream) {
         new Thread(() -> {
             try {
-                while (true) {
+                while (!threadInputStopped) {
                     String msg = inputStream.readUTF();
                     System.out.println(msg);
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.out.println("Client closed");
             }
         }).start();
     }
@@ -38,10 +39,11 @@ public class Client {
         while (true) {
             String msg = scanner.nextLine();
             if (msg.equals("/exit")) {
+                threadInputStopped = true;
                 break;
             }
             outputStream.writeUTF(msg);
-//            outputStream.flush();
+            outputStream.flush();
         }
     }
 
